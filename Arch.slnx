@@ -1,0 +1,8 @@
+﻿<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="Arch.ConsoleApp\Arch.ConsoleApp.csproj" />
+  <Project Path="Arch.EFCore.Test/Arch.EFCore.Test.csproj" />
+  <Project Path="Arch.EFCore/Arch.EFCore.csproj" />
+</Solution>
