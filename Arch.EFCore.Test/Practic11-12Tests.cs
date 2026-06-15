@@ -33,7 +33,7 @@ public class CrudTests : IDisposable
         // Для SQLite используем уникальные ID
         var id = DateTime.Now.Ticks.GetHashCode();
         var text = "Test note content";
-        var createdAt = DateTimeOffset.Now;
+        var createdAt = DateTime.Now;
         
         var note = await Crud.Create(id, text, createdAt, _cancellationToken);
         
@@ -56,9 +56,9 @@ public class CrudTests : IDisposable
         var id2 = DateTime.Now.Ticks.GetHashCode();
         var id3 = DateTime.Now.Ticks.GetHashCode();
         
-        await Crud.Create(id1, "Hello world test", DateTimeOffset.Now, _cancellationToken);
-        await Crud.Create(id2, "Goodbye world test", DateTimeOffset.Now, _cancellationToken);
-        await Crud.Create(id3, "Test message unique", DateTimeOffset.Now, _cancellationToken);
+        await Crud.Create(id1, "Hello world test", DateTime.Now, _cancellationToken);
+        await Crud.Create(id2, "Goodbye world test", DateTime.Now, _cancellationToken);
+        await Crud.Create(id3, "Test message unique", DateTime.Now, _cancellationToken);
         
         var result = await Crud.Read("world", _cancellationToken);
         
@@ -73,8 +73,8 @@ public class CrudTests : IDisposable
         var id1 = DateTime.Now.Ticks.GetHashCode();
         var id2 = DateTime.Now.Ticks.GetHashCode();
         
-        await Crud.Create(id1, "Note 1", DateTimeOffset.Now, _cancellationToken);
-        await Crud.Create(id2, "Note 2", DateTimeOffset.Now, _cancellationToken);
+        await Crud.Create(id1, "Note 1", DateTime.Now, _cancellationToken);
+        await Crud.Create(id2, "Note 2", DateTime.Now, _cancellationToken);
         
         var result = await Crud.Read("", _cancellationToken);
         
@@ -85,7 +85,7 @@ public class CrudTests : IDisposable
     public async Task Read_ById_ShouldReturnNote_WhenNoteExists()
     {
         var id = DateTime.Now.Ticks.GetHashCode();
-        var expectedNote = await Crud.Create(id, "Test note", DateTimeOffset.Now, _cancellationToken);
+        var expectedNote = await Crud.Create(id, "Test note", DateTime.Now, _cancellationToken);
         
         var actualNote = await Crud.Read(id, _cancellationToken);
         
@@ -106,9 +106,9 @@ public class CrudTests : IDisposable
     public async Task Update_ShouldModifyNoteProperties()
     {
         var id = DateTime.Now.Ticks.GetHashCode();
-        var originalNote = await Crud.Create(id, "Original text", DateTimeOffset.Now, _cancellationToken);
+        var originalNote = await Crud.Create(id, "Original text", DateTime.Now, _cancellationToken);
         var newText = "Updated text";
-        var newCreatedAt = DateTimeOffset.Now.AddDays(1);
+        var newCreatedAt = DateTime.Now.AddDays(1);
         
         // Для SQLite важно использовать тот же экземпляр
         await Crud.Update(originalNote, id, newText, newCreatedAt, _cancellationToken);
@@ -123,7 +123,7 @@ public class CrudTests : IDisposable
     public async Task Delete_ShouldRemoveNoteFromDatabase()
     {
         var id = DateTime.Now.Ticks.GetHashCode();
-        var note = await Crud.Create(id, "Note to delete", DateTimeOffset.Now, _cancellationToken);
+        var note = await Crud.Create(id, "Note to delete", DateTime.Now, _cancellationToken);
         
         await Crud.Delete(note, _cancellationToken);
         
@@ -249,8 +249,8 @@ public class CrudTests : IDisposable
     {
         var uniqueEmail = $"delete{Guid.NewGuid()}@test.com";
         var user = await Crud.CreateUser("User to Delete", uniqueEmail, _cancellationToken);
-        await Crud.CreateNoteForUser(user.Id, "Note 1", DateTimeOffset.Now, _cancellationToken);
-        await Crud.CreateNoteForUser(user.Id, "Note 2", DateTimeOffset.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user.Id, "Note 1", DateTime.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user.Id, "Note 2", DateTime.Now, _cancellationToken);
         
         await Crud.DeleteUser(user, _cancellationToken);
         
@@ -266,8 +266,8 @@ public class CrudTests : IDisposable
     {
         var uniqueEmail = $"count{Guid.NewGuid()}@test.com";
         var user = await Crud.CreateUser("Test User", uniqueEmail, _cancellationToken);
-        await Crud.CreateNoteForUser(user.Id, "Note 1", DateTimeOffset.Now, _cancellationToken);
-        await Crud.CreateNoteForUser(user.Id, "Note 2", DateTimeOffset.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user.Id, "Note 1", DateTime.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user.Id, "Note 2", DateTime.Now, _cancellationToken);
         
         var count = await Crud.GetUserNotesCount(user.Id, _cancellationToken);
         
@@ -284,7 +284,7 @@ public class CrudTests : IDisposable
         var uniqueEmail = $"user{Guid.NewGuid()}@notes.com";
         var user = await Crud.CreateUser("Test User", uniqueEmail, _cancellationToken);
         var text = "User's note";
-        var createdAt = DateTimeOffset.Now;
+        var createdAt = DateTime.Now;
         
         var note = await Crud.CreateNoteForUser(user.Id, text, createdAt, _cancellationToken);
         
@@ -299,7 +299,7 @@ public class CrudTests : IDisposable
     public async Task CreateNoteForUser_ShouldThrowException_WhenUserDoesNotExist()
     {
         var exception = await Assert.ThrowsAsync<ArgumentException>(
-            () => Crud.CreateNoteForUser(999999, "Note text", DateTimeOffset.Now, _cancellationToken)
+            () => Crud.CreateNoteForUser(999999, "Note text", DateTime.Now, _cancellationToken)
         );
         Assert.Contains("999", exception.Message);
     }
@@ -313,9 +313,9 @@ public class CrudTests : IDisposable
         var user1 = await Crud.CreateUser("User 1", uniqueEmail1, _cancellationToken);
         var user2 = await Crud.CreateUser("User 2", uniqueEmail2, _cancellationToken);
         
-        await Crud.CreateNoteForUser(user1.Id, "User1 Note 1", DateTimeOffset.Now, _cancellationToken);
-        await Crud.CreateNoteForUser(user1.Id, "User1 Note 2", DateTimeOffset.Now, _cancellationToken);
-        await Crud.CreateNoteForUser(user2.Id, "User2 Note 1", DateTimeOffset.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user1.Id, "User1 Note 1", DateTime.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user1.Id, "User1 Note 2", DateTime.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user2.Id, "User2 Note 1", DateTime.Now, _cancellationToken);
         
         var user1Notes = await Crud.GetUserNotes(user1.Id, _cancellationToken);
         
@@ -329,7 +329,7 @@ public class CrudTests : IDisposable
         var uniqueEmail = $"order{Guid.NewGuid()}@test.com";
         var user = await Crud.CreateUser("Test User", uniqueEmail, _cancellationToken);
         
-        var now = DateTimeOffset.Now;
+        var now = DateTime.Now;
         await Crud.CreateNoteForUser(user.Id, "First", now.AddSeconds(-2), _cancellationToken);
         await Task.Delay(10);
         await Crud.CreateNoteForUser(user.Id, "Second", now.AddSeconds(-1), _cancellationToken);
@@ -352,7 +352,7 @@ public class CrudTests : IDisposable
     {
         var uniqueEmail = $"john{Guid.NewGuid()}@notes.com";
         var user = await Crud.CreateUser("John Doe", uniqueEmail, _cancellationToken);
-        var note = await Crud.CreateNoteForUser(user.Id, "Test note", DateTimeOffset.Now, _cancellationToken);
+        var note = await Crud.CreateNoteForUser(user.Id, "Test note", DateTime.Now, _cancellationToken);
         
         var retrievedNote = await Crud.Read(note.Id, _cancellationToken);
         
@@ -367,8 +367,8 @@ public class CrudTests : IDisposable
     {
         var uniqueEmail = $"notes{Guid.NewGuid()}@user.com";
         var user = await Crud.CreateUser("User with notes", uniqueEmail, _cancellationToken);
-        await Crud.CreateNoteForUser(user.Id, "Note 1", DateTimeOffset.Now, _cancellationToken);
-        await Crud.CreateNoteForUser(user.Id, "Note 2", DateTimeOffset.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user.Id, "Note 1", DateTime.Now, _cancellationToken);
+        await Crud.CreateNoteForUser(user.Id, "Note 2", DateTime.Now, _cancellationToken);
         
         var users = await Crud.ReadUsers("User with notes", _cancellationToken);
         

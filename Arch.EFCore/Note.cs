@@ -4,7 +4,7 @@ public class Note
 {
     public int Id { get; set; }
     public string Text { get; set; } = string.Empty;
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
     
     // Внешний ключ
     public int UserId { get; set; }

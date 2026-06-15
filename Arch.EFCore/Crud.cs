@@ -20,7 +20,7 @@ public class Crud
     /// Сущность новой заметки. После сохранения в БД её свойство <see cref="Note.Id"/>
     /// будет содержать реальный ID из СУБД (не 0)
     /// </returns>
-    public static async Task<Note> Create(int id, string text, DateTimeOffset createdAt, CancellationToken ct = default)
+    public static async Task<Note> Create(int id, string text, DateTime createdAt, CancellationToken ct = default)
     {
         await using var db = new DataContext();
         
@@ -82,7 +82,7 @@ public class Crud
     /// <summary>
     /// Обновляет сущность заметки в БД
     /// </summary>
-    public static async Task Update(Note note, int id, string text, DateTimeOffset createdAt, CancellationToken ct = default)
+    public static async Task Update(Note note, int id, string text, DateTime createdAt, CancellationToken ct = default)
     {
         await using var db = new DataContext();
         note.Id = id;
@@ -107,7 +107,7 @@ public class Crud
     /// <summary>
     /// Создаёт новую заметку для конкретного пользователя
     /// </summary>
-    public static async Task<Note> CreateNoteForUser(int userId, string text, DateTimeOffset createdAt, CancellationToken ct = default)
+    public static async Task<Note> CreateNoteForUser(int userId, string text, DateTime createdAt, CancellationToken ct = default)
     {
         await using var db = new DataContext();
         
